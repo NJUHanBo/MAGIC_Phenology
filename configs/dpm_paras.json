@@ -1,0 +1,26 @@
+{
+  "rice_M": { "min": 0.70, "max": 0.90 },
+  "rice_m": { "min": 0.15, "max": 0.35 },
+  "rice_sos": { "min": 170, "max": 185 },
+  "rice_mat": { "min": 230, "max": 250 },
+  "rice_sen": { "min": 265, "max": 285 },
+  "rice_eos": { "min": 290, "max": 310 },
+  "rice_fraction": { "min": 0.05, "max": 0.95 },
+  
+  "maize_M": { "min": 0.65, "max": 0.85 },
+  "maize_m": { "min": 0.10, "max": 0.25 },
+  "maize_sos": { "min": 160, "max": 175 },
+  "maize_mat": { "min": 220, "max": 240 },
+  "maize_sen": { "min": 250, "max": 265 },
+  "maize_eos": { "min": 280, "max": 295 },
+  "maize_fraction": { "min": 0.05, "max": 0.95 },
+  
+  "wheat_M": { "min": 0.55, "max": 0.80 },
+  "wheat_m": { "min": 0.08, "max": 0.22 },
+  "wheat_sos": { "min": 45, "max": 75 },
+  "wheat_mat": { "min": 100, "max": 120 },
+  "wheat_sen": { "min": 125, "max": 150 },
+  "wheat_eos": { "min": 150, "max": 170 },
+  "wheat_fraction": { "min": 0.05, "max": 0.95 }
+
+}

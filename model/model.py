@@ -311,8 +311,8 @@ class AE_DPM(BaseModel):
 
     def __init__(self, input_dim, hidden_dim, dpm_paras, standardization):
         super().__init__()
-        self.input_dim = input_dim  # 36
-        self.hidden_dim = hidden_dim  # 4
+        self.input_dim = input_dim  # 23
+        self.hidden_dim = hidden_dim  # 21
         # The encoder is learnable neural networks
         self.encoder = nn.Sequential(
             nn.Linear(input_dim, 64),
@@ -329,7 +329,7 @@ class AE_DPM(BaseModel):
 
         self.dpm_paras = json.load(open(os.path.join(PARENT_DIR, dpm_paras)))
         assert hidden_dim == len(
-            self.mogi_paras), "hidden_dim must be equal to the number of Mogi parameters"
+            self.dpm_paras), "hidden_dim must be equal to the number of DPM parameters"
         # Mean and scale for standardization of model input
         self.device = torch.device(
             'cuda' if torch.cuda.is_available() else 'cpu')
@@ -350,11 +350,15 @@ class AE_DPM(BaseModel):
         Transform the output of encoder to the physical parameters
         """
         para_dict = {}
-        for i, para_name in enumerate(self.mogi_paras.keys()):
-            min = self.mogi_paras[para_name]['min']
-            max = self.mogi_paras[para_name]['max']
-            # TODO depending the DPM implementation, the output may need to be scaled
-            para_dict[para_name] = x[:, i]*(max-min)+min
+        for i, para_name in enumerate(self.dpm_paras.keys()): 
+            min_val = self.dpm_paras[para_name]['min']  
+            max_val = self.dpm_paras[para_name]['max']  
+            para_dict[para_name] = x[:, i] * (max_val - min_val) + min_val
+
+        # TODO: 添加约束逻辑
+        # 1. 面积比例约束
+        # 2. 物候期顺序约束  
+        # 3. 轮作时间约束
 
         return para_dict
 
