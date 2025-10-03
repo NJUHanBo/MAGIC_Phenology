@@ -139,25 +139,21 @@ class DPM():
         
         # === Step 3: Parse area parameters ===
         A1 = paras['wheat_fraction'].unsqueeze(1)  # [batch_size, 1]
-        A2 = paras['rice_fraction'].unsqueeze(1)    # [batch_size, 1]
-        A3 = paras['maize_fraction'].unsqueeze(1)   # [batch_size, 1]
+        A2 = paras['rice_mix_maize_fraction'].unsqueeze(1)    # [batch_size, 1]
+        A3 = paras['maize_in_mix_fraction'].unsqueeze(1)   # [batch_size, 1]
         
         # === Step 4: Time-segmented mixing ===
         mixed_evi = torch.zeros(batch_size, len(time_points), device=device)
         
         for i, doy in enumerate(time_points):
             if doy <= 170:  # Spring: wheat + background
-                # Spring wheat area ratio (simplified: 1 - summer total area)
-                # A1_spring = 1 - A2.squeeze(1) - A3.squeeze(1)  # [batch_size]
-                # A1_spring = torch.clamp(A1_spring, 0, 1)
-                
-                # Spring mixing: A1*wheat + (1-A1)*background
+            # Spring mixing: A1*wheat + (1-A1)*background
                 mixed_evi[:, i] = (A1 * wheat_evi[:, i] + 
                                   (1 - A1) * background_evi[:, i])
             else:  # Summer: rice + maize + background
                 # Summer mixing: A2*rice + A3*maize + (1-A2-A3)*background  
-                mixed_evi[:, i] = (A2.squeeze(1) * rice_evi[:, i] + 
-                                  A3.squeeze(1) * maize_evi[:, i] + 
-                                  (1 - A2.squeeze(1) - A3.squeeze(1)) * background_evi[:, i])
+                mixed_evi[:, i] = (A2.squeeze(1)*(1-A3.squeeze(1)) * rice_evi[:, i] + 
+                                  A2.squeeze(1)*A3.squeeze(1) * maize_evi[:, i] + 
+                                  (1 - A2.squeeze(1)) * background_evi[:, i])
         
         return mixed_evi
