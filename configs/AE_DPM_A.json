@@ -4,8 +4,8 @@
     "arch": {
         "type": "VanillaAE",
         "args": {
-            "input_dim": 36,
-            "hidden_dim": 4
+            "input_dim": 23,
+            "hidden_dim": 21
         }
     },
     "data_loader": {
@@ -46,8 +46,8 @@
         "verbosity": 2,
         "monitor": "min val_loss",
         "early_stop": 10,
-        "input_key": "displacement",
-        "output_key": "displacement",
+        "input_key": "evi",
+        "output_key": "evi",
         "stablize_grad": false,
         "tensorboard": false,
         "wandb": false

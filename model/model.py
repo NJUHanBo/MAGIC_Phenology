@@ -354,15 +354,31 @@ class AE_DPM(BaseModel):
             min_val = self.dpm_paras[para_name]['min']  
             max_val = self.dpm_paras[para_name]['max']  
             para_dict[para_name] = x[:, i] * (max_val - min_val) + min_val
+        
 
-        # TODO: 添加约束逻辑
-        # 1. 面积比例约束
-        # 2. 物候期顺序约束  
-        # 3. 轮作时间约束
+        # === Area ristrictions ===
+        
+        # 1. Crops fraction: [0.05, 0.95]
+        para_dict['wheat_fraction'] = torch.clamp(para_dict['wheat_fraction'], 0.05, 0.95)
+        para_dict['rice_fraction'] = torch.clamp(para_dict['rice_fraction'], 0.05, 0.95)
+        para_dict['maize_fraction'] = torch.clamp(para_dict['maize_fraction'], 0.05, 0.95)
+        
+        # 2. rice_fraction + maize_fraction <= 0.95
+        summer_total = para_dict['rice_fraction'] + para_dict['maize_fraction']
 
+        # 3. Scale the rice_fraction and maize_fraction if summer_total > 0.95
+        #    to ensure the total area does not exceed 0.95
+        scale_factor = torch.where(
+            summer_total > 0.95,
+            0.95 / summer_total,
+            torch.ones_like(summer_total)
+        )
+        para_dict['rice_fraction'] *= scale_factor
+        para_dict['maize_fraction'] *= scale_factor
+        ## 上述两步我是想确保 rice_fraction + maize_fraction <= 0.95，我不确定是否合理
         return para_dict
 
-    #  define decode function to further process the output of decoder
+    #  4. define decode function to further process the output of decoder
     def decode(self, para_dict):
         # TODO depending the DPM implementation, the input need to be changed
         output = self.decoder.run(**para_dict)
