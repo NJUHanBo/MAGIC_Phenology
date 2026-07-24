@@ -125,3 +125,35 @@ data/processed/rtm/wytham/
 .vscode/
 .idea/
 __MACOSX/
+.DS_Store
+**/.DS_Store
+
+# Unrelated drafts
+ppt_prompt.txt
+
+# Local smoke configs
+configs/phys_smpl/_smoke_*.json
+
+# Large regenerable synthetic EVI tables (recreate via scripts/generate_synthetic_dpm.py)
+data/processed/dpm/train_evi.csv
+data/processed/dpm/valid_evi.csv
+data/processed/dpm/test_evi.csv
+data/processed/dpm/train_params.csv
+data/processed/dpm/valid_params.csv
+data/processed/dpm/test_params.csv
+
+# STSC processed arrays (regenerable)
+data/processed/stsc/*_stsc.npy
+data/processed/stsc/*_reflectance.npy
+data/processed/stsc/*_rowcol.npy
+data/processed/stsc/x_mean.npy
+data/processed/stsc/x_scale.npy
+data/processed/stsc/train_params.csv
+data/processed/stsc/valid_params.csv
+data/processed/stsc/test_params.csv
+!data/processed/stsc/.gitkeep
+!data/raw/modis_stsc/.gitkeep
+!data/processed/stsc/endmembers.json
+!data/processed/stsc/huanghai_crop_area_ha.csv
+!data/processed/stsc/qa_report.csv
+!configs/phys_smpl/PILA_*.json

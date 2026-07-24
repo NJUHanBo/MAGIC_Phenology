@@ -3,14 +3,12 @@ from base import BaseDataLoader
 from datasets.spectrumS2 import SpectrumS2, SyntheticS2
 from datasets.displacementGPS import DisplacementGPS, DisplacementGPSSeq
 from datasets.timeseriesEVI import TimeSeriesEVI
+from datasets.timeseriesSTSC import TimeSeriesSTSC
 import numpy as np
 import torch
 
-class SpectrumS2DataLoader(BaseDataLoader):
-    """
-    SpectrumS2 data loading demo using BaseDataLoader
-    """
 
+class SpectrumS2DataLoader(BaseDataLoader):
     def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=1, with_const=False):
         self.data_dir = data_dir
         self.dataset = SpectrumS2(self.data_dir, with_const=with_const)
@@ -18,41 +16,37 @@ class SpectrumS2DataLoader(BaseDataLoader):
 
 
 class SyntheticS2DataLoader(BaseDataLoader):
-    """
-    SyntheticS2 data loading demo using BaseDataLoader
-    """
-
     def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=1, with_const=False):
         self.data_dir = data_dir
         self.dataset = SyntheticS2(self.data_dir)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
 
-class GPSDataLoader(BaseDataLoader):
-    """
-    GPS data loading demo using BaseDataLoader
-    """
 
+class GPSDataLoader(BaseDataLoader):
     def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=1, with_const=False):
         self.data_dir = data_dir
         self.dataset = DisplacementGPS(self.data_dir)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
 
-class GPSSeqDataLoader(BaseDataLoader):
-    """
-    GPS data loading demo using BaseDataLoader
-    """
 
+class GPSSeqDataLoader(BaseDataLoader):
     def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=1, with_const=False):
         self.data_dir = data_dir
         self.dataset = DisplacementGPSSeq(self.data_dir)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
 
-class EVIDataLoader(BaseDataLoader):
-    """
-    GPS data loading demo using BaseDataLoader
-    """
 
+class EVIDataLoader(BaseDataLoader):
     def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=1, with_const=False):
         self.data_dir = data_dir
         self.dataset = TimeSeriesEVI(self.data_dir)
+        super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
+
+
+class STSCDataLoader(BaseDataLoader):
+    """Multi-band STSC surfaces flattened to 322-D vectors."""
+
+    def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=1, with_const=False):
+        self.data_dir = data_dir
+        self.dataset = TimeSeriesSTSC(self.data_dir)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)

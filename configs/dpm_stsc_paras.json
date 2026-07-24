@@ -1,0 +1,24 @@
+{
+  "wheat_sos": {"min": 30, "max": 90},
+  "wheat_mat": {"min": 90, "max": 140},
+  "wheat_sen": {"min": 120, "max": 160},
+  "wheat_eos": {"min": 140, "max": 170},
+
+  "summer_sos": {"min": 150, "max": 200},
+  "summer_mat": {"min": 200, "max": 250},
+
+  "rice_sen":  {"min": 240, "max": 285},
+  "rice_eos":  {"min": 270, "max": 310},
+  "maize_sen": {"min": 230, "max": 270},
+  "maize_eos": {"min": 255, "max": 290},
+  "soy_sen":   {"min": 235, "max": 275},
+  "soy_eos":   {"min": 260, "max": 295},
+
+  "wheat_frac": {"min": 0.0, "max": 0.85},
+  "rice_frac":  {"min": 0.0, "max": 0.70},
+  "maize_frac": {"min": 0.0, "max": 0.70},
+  "soy_frac":   {"min": 0.0, "max": 0.50},
+
+  "flood_onset":     {"min": 150, "max": 200},
+  "flood_intensity": {"min": 0.0, "max": 1.0}
+}

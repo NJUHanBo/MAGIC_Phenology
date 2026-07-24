@@ -52,37 +52,41 @@ def prepare_device(n_gpu_use):
 class MetricTracker:
     def __init__(self, *keys, writer=None):
         self.writer = writer
-        self._data = pd.DataFrame(
-            index=keys, columns=['total', 'counts', 'average'])
+        self._keys = keys
+        self._total = {}
+        self._counts = {}
         self.reset()
 
     def reset(self):
-        for col in self._data.columns:
-            self._data[col].values[:] = 0
+        for k in self._keys:
+            self._total[k] = 0.0
+            self._counts[k] = 0
 
     def update(self, key, value, n=1):
         if self.writer is not None:
             self.writer.add_scalar(key, value)
-        self._data.total[key] += value * n
-        self._data.counts[key] += n
-        self._data.average[key] = self._data.total[key] / \
-            self._data.counts[key]
+        self._total[key] = self._total.get(key, 0.0) + value * n
+        self._counts[key] = self._counts.get(key, 0) + n
 
     def avg(self, key):
-        return self._data.average[key]
+        c = self._counts.get(key, 0)
+        return self._total[key] / c if c > 0 else 0.0
 
     def result(self):
-        return dict(self._data.average)
+        return {k: self.avg(k) for k in self._keys}
 
 def kldiv_normal_normal(mean1:torch.Tensor, lnvar1:torch.Tensor, mean2:torch.Tensor, lnvar2:torch.Tensor):
     """
     KL divergence between normal distributions, KL( N(mean1, diag(exp(lnvar1))) || N(mean2, diag(exp(lnvar2))) )
     """
-    if lnvar1.ndim==2 and lnvar2.ndim==2:
-        return 0.5 * torch.sum((lnvar1-lnvar2).exp() - 1.0 + lnvar2 - lnvar1 + (mean2-mean1).pow(2)/lnvar2.exp(), dim=1)
-    elif lnvar1.ndim==1 and lnvar2.ndim==1:
+    lnvar1_clamped = lnvar1.clamp(-9.0, 5.0)
+    lnvar2_clamped = lnvar2.clamp(-9.0, 5.0)
+    
+    if lnvar1_clamped.ndim==2 and lnvar2_clamped.ndim==2:
+        return 0.5 * torch.sum((lnvar1_clamped-lnvar2_clamped).exp() - 1.0 + lnvar2_clamped - lnvar1_clamped + (mean2-mean1).pow(2)/lnvar2_clamped.exp(), dim=1)
+    elif lnvar1_clamped.ndim==1 and lnvar2_clamped.ndim==1:
         d = mean1.shape[1]
-        return 0.5 * (d*((lnvar1-lnvar2).exp() - 1.0 + lnvar2 - lnvar1) + torch.sum((mean2-mean1).pow(2), dim=1)/lnvar2.exp())
+        return 0.5 * (d*((lnvar1_clamped-lnvar2_clamped).exp() - 1.0 + lnvar2_clamped - lnvar1_clamped) + torch.sum((mean2-mean1).pow(2), dim=1)/lnvar2_clamped.exp())
     else:
         raise ValueError()
     
@@ -103,6 +107,7 @@ def actmodule(activation:str):
         raise ValueError('unknown activation function specified')
 
 def draw_normal(mean:torch.Tensor, lnvar:torch.Tensor):
-    std = torch.exp(0.5*lnvar) #TODO lnvar and reparameterization in VAE
-    eps = torch.randn_like(std) # reparametrization trick
+    lnvar_clamped = lnvar.clamp(-9.0, 5.0)
+    std = torch.exp(0.5*lnvar_clamped)
+    eps = torch.randn_like(std)
     return mean + eps*std

@@ -1,28 +1,31 @@
-h5py
-idna
-ipykernel
-ipython
-MarkupSafe
-matplotlib
-matplotlib-inline
-numpy
-openpyxl==3.1.5
-packaging
-pandas==1.5.3
-parso
-pathtools
-pexpect
-Pillow
-platformdirs
-plotly
-ply==3.11
-rasterio==1.4.3
-scikit-learn
-scipy==1.10.1
-seaborn
-torch==2.0.0
-torchaudio==2.0.0
-torchdiffeq
-torchvision==0.15.0
-tqdm
-wandb
+# MAGIC_Phenology HPC Environment
+# Python >= 3.10 (tested on 3.14, recommend 3.11 for best compatibility)
+#
+# Install:
+#   conda create -n magic python=3.11
+#   conda activate magic
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+#   pip install -r requirements.txt
+
+# Core deep learning
+torch>=2.1.0
+torchvision>=0.16.0
+
+# Scientific computing
+numpy>=1.24.0
+scipy>=1.11.0
+pandas>=2.0.0
+scikit-learn>=1.3.0
+
+# Geospatial / remote sensing
+rasterio>=1.3.0
+earthengine-api>=0.1.384
+
+# Visualization
+matplotlib>=3.7.0
+
+# Experiment tracking
+wandb>=0.15.0
+
+# Standard library (no install needed): os, sys, json, glob, re, argparse,
+# collections, datetime, logging, pathlib, math, warnings, csv

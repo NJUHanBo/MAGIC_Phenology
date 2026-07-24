@@ -1,0 +1,105 @@
+{
+    "name": "PILA_STSC_A",
+    "n_gpu": 1,
+    "arch": {
+        "type": "PHYS_VAE_SMPL",
+        "args": {
+            "physics": "DPM_STSC",
+            "input_dim": 322,
+            "hidden_dim": 18,
+            "dpm_paras": "configs/dpm_stsc_paras.json",
+            "endmembers": "data/processed/stsc/endmembers.json",
+            "learnable_endmembers": true,
+            "standardization": {
+                "x_mean": "data/processed/stsc/x_mean.npy",
+                "x_scale": "data/processed/stsc/x_scale.npy"
+            }
+        },
+        "phys_vae": {
+            "no_phy": false,
+            "dim_z_aux": 0,
+            "dim_z_phy": 18,
+            "activation": "elu",
+            "num_units_feat": 128,
+            "hidlayers_feat": [128, 128],
+            "hidlayers_z_aux": [128],
+            "hidlayers_z_phy": [128],
+            "residual_rank": 0,
+            "tau_init": 3.0,
+            "tau_final": 1.0,
+            "tau_warmup_epochs": 20,
+            "r_init": 0.0,
+            "r_final": 1.0,
+            "r_warmup_epochs": 30,
+            "ortho_penalty_weight": 0.1,
+            "coeff_penalty_weight": 0.0001,
+            "delta_penalty_weight": 0.0001,
+            "detach_x_P_for_bias": true
+        }
+    },
+    "data_loader": {
+        "type": "STSCDataLoader",
+        "args": {
+            "data_dir": "data/processed/stsc/train_stsc.npy",
+            "batch_size": 128,
+            "shuffle": true,
+            "validation_split": 0.0,
+            "num_workers": 2,
+            "with_const": false
+        },
+        "data_dir_valid": "data/processed/stsc/valid_stsc.npy",
+        "data_dir_test": "data/processed/stsc/test_stsc.npy"
+    },
+    "optimizer": {
+        "type": "Adam",
+        "args": {
+            "lr": 0.0005,
+            "weight_decay": 0.0001,
+            "amsgrad": true
+        }
+    },
+    "loss": "mse_loss",
+    "loss_test": "mse_loss",
+    "metrics": [],
+    "lr_scheduler": {
+        "type": "CosineAnnealingLR",
+        "args": {
+            "T_max": 200
+        }
+    },
+    "trainer": {
+        "epochs": 200,
+        "save_dir": "saved/stsc",
+        "save_period": 20,
+        "log_step": 10,
+        "verbosity": 2,
+        "monitor": "min val_rec_loss",
+        "early_stop": 50,
+        "input_key": "stsc",
+        "output_key": "stsc",
+        "stablize_grad": true,
+        "grad_clip_norm": 1.0,
+        "tensorboard": false,
+        "wandb": false,
+        "phys_vae": {
+            "epochs_pretrain": 30,
+            "kl_warmup_epochs": 50,
+            "balance_data_aug": 1.0,
+            "use_kl_term_z_phy": false,
+            "beta_max_z_phy": 1.0,
+            "use_kl_term_z_aux": false,
+            "beta_max_z_aux": 1.0,
+            "use_capacity_control": false,
+            "C_max": 18.0,
+            "C_gamma": 10.0,
+            "beta_aux": 1.0,
+            "edge_penalty_weight": 0.0,
+            "edge_penalty_power": 1.0,
+            "temporal_smoothness_weight": 0.0,
+            "use_ema_prior": false,
+            "ema_momentum": 0.999,
+            "syn_loss_min_weight": 0.1,
+            "syn_loss_decay_epochs": 50
+        }
+    }
+}
